@@ -21,3 +21,17 @@ $router->get('/login', function (Request $request) {
  
     return response()->json(compact('token'));
 });
+
+$router->group(['prefix' => 'auth'], function () use($router) {
+    $router->post('login', 'AuthController@login');    
+});
+
+$router->group([
+    'middleware' => 'auth',
+    'prefix' => 'auth',
+], function () use($router) {
+    $router->post('logout', 'AuthController@logout');
+    $router->post('refresh', 'AuthController@refresh');
+    $router->post('me', 'AuthController@me');
+
+});
