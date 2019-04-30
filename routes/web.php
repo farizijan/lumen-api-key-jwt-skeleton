@@ -12,26 +12,42 @@ use Illuminate\Http\Request;
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
 
-$router->get('/login', function (Request $request) {
-    $token = app('auth')->attempt($request->only('email', 'password'));
- 
-    return response()->json(compact('token'));
+/*
+|--------------------------------------------------------------------------
+| JWT AUTH ROUTES
+|--------------------------------------------------------------------------
+|
+| Here is where routes for JWT auth placed
+|
+*/
+$router->group(['prefix' => 'api/v2'], function () use($router) {
+    $router->post('login', 'AuthJwtController@login');    
 });
-
-$router->group(['prefix' => 'auth'], function () use($router) {
-    $router->post('login', 'AuthController@login');    
-});
-
 $router->group([
-    'middleware' => 'auth',
-    'prefix' => 'auth',
+    'middleware' => 'auth_jwt_middleware:api_jwt',
+    'prefix' => 'api/v2',
 ], function () use($router) {
-    $router->post('logout', 'AuthController@logout');
-    $router->post('refresh', 'AuthController@refresh');
-    $router->post('me', 'AuthController@me');
+    $router->post('logout', 'AuthJwtController@logout');
+    $router->post('refresh', 'AuthJwtController@refresh');
+    $router->post('me', 'AuthJwtController@me');
+});
 
+
+
+/*
+|--------------------------------------------------------------------------
+| API KEY AUTH ROUTES
+|--------------------------------------------------------------------------
+|
+| Here is where routes for API KEY auth placed
+|
+*/
+$router->group([
+    'middleware' => 'auth_middleware:api',
+    'prefix' => 'api/v1',
+], function () use($router) {
+    $router->get('/', function () use ($router) {
+        return $router->app->version();
+    });
 });

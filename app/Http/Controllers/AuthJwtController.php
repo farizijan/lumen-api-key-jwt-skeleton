@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
-class AuthController extends Controller
+class AuthJwtController extends Controller
 {
     /**
      * Create a new AuthController instance.
@@ -29,7 +29,7 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if ($token = $this->guard()->attempt($credentials)) {
+        if ($token = $this->guard('')->attempt($credentials)) {
             return $this->respondWithToken($token);
         }
 
@@ -91,6 +91,6 @@ class AuthController extends Controller
      */
     public function guard()
     {
-        return Auth::guard();
+        return Auth::guard('api_jwt');
     }
 }

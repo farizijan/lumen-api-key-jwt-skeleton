@@ -15,6 +15,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@nomail.com',
             'password' => app('hash')->make('admin123'),
+            'api_token' => str_random(100)
         ]);
 
     }
