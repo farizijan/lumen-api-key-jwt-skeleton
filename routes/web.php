@@ -31,9 +31,8 @@ $router->group([
     $router->post('logout', 'AuthJwtController@logout');
     $router->post('refresh', 'AuthJwtController@refresh');
     $router->post('me', 'AuthJwtController@me');
+    allAuthenticateRoutes($router);
 });
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +46,21 @@ $router->group([
     'middleware' => 'auth_middleware:api',
     'prefix' => 'api/v1',
 ], function () use($router) {
-    $router->get('/', function () use ($router) {
+    allAuthenticateRoutes($router);
+});
+
+/*
+|--------------------------------------------------------------------------
+| ALL API ROUTES
+|--------------------------------------------------------------------------
+|
+| Here is where all routes which needs authentication 
+| either using "API KEY" or "JWT" being placed
+|
+*/
+function allAuthenticateRoutes(&$router)
+{
+    $router->get('/version', function () use ($router) {
         return $router->app->version();
     });
-});
+}
